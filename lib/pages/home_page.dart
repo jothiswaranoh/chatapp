@@ -1,5 +1,6 @@
-import 'package:chatui/components/carouselbody.dart';
-import 'package:chatui/variables/app_colors.dart';
+import 'package:groupchat/components/carouselbody.dart';
+import 'package:groupchat/components/my_drawer.dart';
+import 'package:groupchat/variables/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
@@ -12,12 +13,6 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor:
             AppColors.mainBackground, // Match the Scaffold background color
-        leading: IconButton(
-          icon: Icon(Icons.chat), // Replace with your app logo
-          onPressed: () {
-            // Add your logic here for the logo button press if needed
-          },
-        ),
         title: const Text(
           'Chating App',
           style: TextStyle(color: AppColors.white),
@@ -47,11 +42,41 @@ class HomePage extends StatelessWidget {
           ),
         ),
       ),
-      body:Column(
-          children: [
-            const SizedBox(height: 20),
-            CarouselBody(),
-          ],
+        drawer:MyDrawer(),
+      body: Column(
+        children: [
+          const SizedBox(height: 20),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 8.0),
+              child: Text(
+                "Group chat",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 26,
+                  // Add other styles as needed
+                ),
+              ),
+            ),
+          ),
+          CarouselBody(),
+          const SizedBox(height: 20),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 8.0),
+              child: Text(
+                "Chats",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 26,
+                  // Add other styles as needed
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

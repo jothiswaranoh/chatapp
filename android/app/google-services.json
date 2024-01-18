@@ -1,0 +1,98 @@
+{
+  "project_info": {
+    "project_number": "299864826",
+    "firebase_url": "https://jschat-4e493-default-rtdb.firebaseio.com",
+    "project_id": "jschat-4e493",
+    "storage_bucket": "jschat-4e493.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:299864826:android:e16309b71f72bacf70ef43",
+        "android_client_info": {
+          "package_name": "com.example.chatapp_firebase"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "299864826-2435k13ut1tetd8erlimvemr6p783sb1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCRhizMHUqILq7PmGgxhK272HecF2QcfYA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "299864826-2435k13ut1tetd8erlimvemr6p783sb1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:299864826:android:53bc2080653fd69e70ef43",
+        "android_client_info": {
+          "package_name": "com.example.groupchat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "299864826-2435k13ut1tetd8erlimvemr6p783sb1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCRhizMHUqILq7PmGgxhK272HecF2QcfYA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "299864826-2435k13ut1tetd8erlimvemr6p783sb1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:299864826:android:dba2867dc1afcf8a70ef43",
+        "android_client_info": {
+          "package_name": "com.example.jschat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "299864826-2435k13ut1tetd8erlimvemr6p783sb1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCRhizMHUqILq7PmGgxhK272HecF2QcfYA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "299864826-2435k13ut1tetd8erlimvemr6p783sb1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

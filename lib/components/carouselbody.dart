@@ -1,8 +1,7 @@
-import 'package:carousel_slider/carousel_slider.dart';
-import 'package:chatui/variables/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
-class CarouselBody extends StatefulWidget {
+class CarouselBody extends StatelessWidget {
   final List<String> imgList = [
     'https://images.unsplash.com/photo-1520342868574-5fa3804e551c?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=6ff92caffcdd63681a35134a6770ed3b&auto=format&fit=crop&w=1951&q=80',
     'https://images.unsplash.com/photo-1522205408450-add114ad53fe?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=368f45b0888aeb0b7b08e3a1084d3ede&auto=format&fit=crop&w=1950&q=80',
@@ -12,179 +11,65 @@ class CarouselBody extends StatefulWidget {
     'https://images.unsplash.com/photo-1519985176271-adb1088fa94c?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=a0c8d632e977f94e5d312d9893258f59&auto=format&fit=crop&w=1355&q=80',
     'https://images.unsplash.com/photo-1519985176271-adb1088fa94c?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=a0c8d632e977f94e5d312d9893258f59&auto=format&fit=crop&w=1355&q=80',
     'https://images.unsplash.com/photo-1519985176271-adb1088fa94c?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=a0c8d632e977f94e5d312d9893258f59&auto=format&fit=crop&w=1355&q=80',
-    'https://images.unsplash.com/photo-1519985176271-adb1088fa94c?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=a0c8d632e977f94e5d312d9893258f59&auto=format&fit=crop&w=1355&q=80',
+  ];
 
+  final List<String> captions = [
+    'Caption 1',
+    'Caption 2',
+    'Caption 3',
+    'Caption 4',
+    'Caption 5',
+    'Caption 6',
+    'Caption 7',
+    'Caption 8',
   ];
 
   @override
-  _CarouselBodyState createState() => _CarouselBodyState();
-}
-
-class _CarouselBodyState extends State<CarouselBody> {
-  @override
   Widget build(BuildContext context) {
     return Container(
-        child: CarouselSlider.builder(
-          itemCount: (widget.imgList.length / 3).ceil(),
-          options: CarouselOptions(
-            autoPlay: true,
-            aspectRatio: 2.0,
-            enlargeCenterPage: true,
-          ),
-          itemBuilder: (context, index, realIdx) {
-            final int first = index * 3;
-            final int second = first + 1;
-            final int third = first + 2;
+      child: CarouselSlider.builder(
+        options: CarouselOptions(
+          aspectRatio: 16 / 9,
+          enlargeCenterPage: false,
+          viewportFraction: 0.3,
+        ),
+        itemCount: imgList.length,
+        itemBuilder: (context, index, realIdx) {
+          double imageWidth = MediaQuery.of(context).size.width * 0.8 / 3;
+          double imageHeight = MediaQuery.of(context).size.height * 0.8 / 2;
 
-            return Row(
+          return Container(
+            width: imageWidth,
+            height: imageHeight,
+            margin: EdgeInsets.symmetric(horizontal: 10),
+            child: Stack(
               children: [
-                Expanded(
-                  child: Container(
-                    height: 150,
-                    margin: EdgeInsets.all(5.0),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                      child: Stack(
-                        children: <Widget>[
-                          Image.network(
-                            widget.imgList[first],
-                            fit: BoxFit.contain,
-                            width: 1000.0,
-                          ),
-                          Positioned(
-                            bottom: 0.0,
-                            left: 0.0,
-                            right: 0.0,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [
-                                    Color.fromARGB(200, 0, 0, 0),
-                                    Color.fromARGB(0, 0, 0, 0),
-                                  ],
-                                  begin: Alignment.bottomCenter,
-                                  end: Alignment.topCenter,
-                                ),
-                              ),
-                              padding: EdgeInsets.symmetric(
-                                vertical: 10.0,
-                                horizontal: 20.0,
-                              ),
-                              child: Text(
-                                'No. $first image',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20.0,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(50),
+                  child: Image.network(
+                    imgList[index],
+                    width: double.infinity,
+                    height: double.infinity,
+                    fit: BoxFit.cover,
                   ),
                 ),
-                Expanded(
-                  child: Container(
-                     height: 150,
-                    margin: EdgeInsets.all(5.0),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                      child: Stack(
-                        children: <Widget>[
-                          Image.network(
-                            widget.imgList[second],
-                            fit: BoxFit.cover,
-                            width: 1000.0,
-                          ),
-                          Positioned(
-                            bottom: 0.0,
-                            left: 0.0,
-                            right: 0.0,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [
-                                    Color.fromARGB(200
-
-, 0, 0, 0),
-                                    Color.fromARGB(0, 0, 0, 0),
-                                  ],
-                                  begin: Alignment.bottomCenter,
-                                  end: Alignment.topCenter,
-                                ),
-                              ),
-                              padding: EdgeInsets.symmetric(
-                                vertical: 10.0,
-                                horizontal: 20.0,
-                              ),
-                              child: Text(
-                                'No. $second image',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20.0,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Container(
-                     height: 150,
-                    margin: EdgeInsets.all(5.0),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                      child: Stack(
-                        children: <Widget>[
-                          Image.network(
-                            widget.imgList[third],
-                            fit: BoxFit.cover,
-                            width: 1000.0,
-                          ),
-                          Positioned(
-                            bottom: 0.0,
-                            left: 0.0,
-                            right: 0.0,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [
-                                    Color.fromARGB(200, 0, 0, 0),
-                                    Color.fromARGB(0, 0, 0, 0),
-                                  ],
-                                  begin: Alignment.bottomCenter,
-                                  end: Alignment.topCenter,
-                                ),
-                              ),
-                              padding: EdgeInsets.symmetric(
-                                vertical: 10.0,
-                                horizontal: 20.0,
-                              ),
-                              child: Text(
-                                'No. $third image',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20.0,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                Positioned(
+                  bottom: 10,
+                  left: 10,
+                  child: Text(
+                    captions[index],
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
               ],
-            );
-          },
-        ),
+            ),
+          );
+        },
+      ),
     );
   }
 }
