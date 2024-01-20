@@ -10,6 +10,8 @@ import 'package:groupchat/model/firestore.dart';
 import 'package:groupchat/controller/comman.dart';
 import '../helper/display_message_to_user.dart';
 
+final FirebaseFirestore _firestore= FirebaseFirestore.instance;
+
 void postMessage(TextEditingController newPostController) {
   if (newPostController.text.isNotEmpty) {
     String message = newPostController.text;
@@ -111,6 +113,7 @@ Future<void> createUserDocument(UserCredential? userCredential,
         .collection("Users")
         .doc(userCredential.user!.email)
         .set({
+      'uid':userCredential.user!.uid,
       'email': userCredential.user!.email,
       'username': userController.text,
       'bio':'empty',

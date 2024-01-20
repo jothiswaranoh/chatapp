@@ -1,8 +1,11 @@
 import 'package:groupchat/auth/auth.dart';
+import 'package:groupchat/auth/login_or_register.dart';
 import 'package:groupchat/firebase_options.dart';
 import 'package:groupchat/pages/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:groupchat/pages/profile_page.dart';
+import 'package:groupchat/pages/users_page.dart';
 import 'package:groupchat/theme/theme_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -26,6 +29,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home:AuthPage(),
+        routes: {
+        '/login_register_page': (context) => const LoginOrRegister(),
+        '/home_page': (context) => HomePage(),
+        '/profile_page': (context) => ProfilePage(),
+        '/users_page': (context) => UsersPage(),
+      },
     );
   }
 }

@@ -1,10 +1,18 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:groupchat/components/carouselbody.dart';
 import 'package:groupchat/components/my_drawer.dart';
+import 'package:groupchat/components/user_tile.dart';
+import 'package:groupchat/pages/chat_page.dart';
+import 'package:groupchat/auth/auth.dart';
+import 'package:groupchat/services/chat/chat_service.dart';
 import 'package:groupchat/variables/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  HomePage({super.key});
+
+  final ChatService _chatService = ChatService();
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +50,7 @@ class HomePage extends StatelessWidget {
           ),
         ),
       ),
-        drawer:MyDrawer(),
+      drawer: MyDrawer(),
       body: Column(
         children: [
           const SizedBox(height: 20),
@@ -71,13 +79,58 @@ class HomePage extends StatelessWidget {
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 26,
-                  // Add other styles as needed
                 ),
               ),
             ),
           ),
+          _buildUserList()
         ],
       ),
     );
   }
+
+  Widget _buildUserList() {
+    return Expanded(
+      child: StreamBuilder(
+          stream: _chatService.getUsersStream(),
+          builder: (context, snapshot) {
+            //if any error
+            if (snapshot.hasError) {
+              return const Text("error");
+            }
+
+            //loading
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            return ListView(
+                children: snapshot.data!
+                    .map<Widget>(
+                        (userData) => _buildUserListItem(userData, context))
+                    .toList());
+          }),
+    );
+  }
+}
+
+//build each items
+
+Widget _buildUserListItem(Map<String, dynamic> userData, BuildContext context) {
+
+
+  
+  //disaplay expect curretn user
+  //check this email does not eqaul to the current user.
+  return UserTile(
+      text: userData["email"],
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => ChatPage(
+              receivedEmail: userData['email'],
+              receivedID: userData['uid'],
+            ),
+          ),
+        );
+      });
 }
