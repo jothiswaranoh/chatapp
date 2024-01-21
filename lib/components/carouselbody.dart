@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
@@ -24,53 +26,54 @@ class CarouselBody extends StatelessWidget {
     'Caption 8',
   ];
 
+  CarouselBody({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: CarouselSlider.builder(
-        options: CarouselOptions(
-          height:100.0,
-          aspectRatio: 16 / 9,
-          enlargeCenterPage: false,
-          viewportFraction: 0.3,
-        ),
-        itemCount: imgList.length,
-        itemBuilder: (context, index, realIdx) {
-          double imageWidth = MediaQuery.of(context).size.width * 0.8 / 3;
-          double imageHeight = MediaQuery.of(context).size.height * 0.8 / 2;
-
-          return Container(
-            width: 100.0,
-            height:imageHeight,
-            margin: EdgeInsets.symmetric(horizontal: 10),
-            child: Stack(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(50),
-                  child: Image.network(
-                    imgList[index],
-                    width: double.infinity,
-                    height: double.infinity,
-                    fit: BoxFit.cover,
+    return Column(
+      children: [
+        CarouselSlider.builder(
+          options: CarouselOptions(
+            height: 120.0,
+            aspectRatio: 16 / 9,
+            enlargeCenterPage: false,
+            viewportFraction: 0.3,
+          ),
+          itemCount: imgList.length,
+          itemBuilder: (context, index, realIdx) {
+            return Container(
+              width: 80.0,
+              margin: const EdgeInsets.symmetric(horizontal: 40),
+              child: Column(
+                children: [
+                  const SizedBox(height: 10),
+                  SizedBox(
+                    height: 70, // Adjust the height as needed
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(50),
+                      child: Image.network(
+                        imgList[index],
+                        width: double.infinity,
+                        height: double.infinity,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                   ),
-                ),
-                Positioned(
-                  bottom: 10,
-                  left: 10,
-                  child: Text(
+                  const SizedBox(height: 10), // Add any spacing needed
+                  Text(
                     captions[index],
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
-                      fontSize: 16,
+                      fontSize: 12,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                ),
-              ],
-            ),
-          );
-        },
-      ),
+                ],
+              ),
+            );
+          },
+        ),
+      ],
     );
   }
 }

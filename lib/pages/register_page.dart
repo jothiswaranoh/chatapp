@@ -56,8 +56,9 @@ class _RegisterPageState extends State<RegisterPage> {
   // TextEditingController passwordController,
   // TextEditingController confirmPasswordController,
   // TextEditingController userController,
-  void register_page(){
-    register(context, emailController, passwordController, conformpasswordController, userController);
+  void register_page() {
+    register(context, emailController, passwordController,
+        conformpasswordController, userController);
   }
 
   TextEditingController userController = TextEditingController();
@@ -88,7 +89,8 @@ class _RegisterPageState extends State<RegisterPage> {
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(25.0),
-          child: Column(mainAxisAlignment: MainAxisAlignment.center,
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               //logo
               children: [
                 Icon(
@@ -103,7 +105,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
                 //app name
                 const Text(
-                  "S O C I A L M E D I A",
+                  "C H A T   A P P",
                   style: TextStyle(fontSize: 20),
                 ),
 

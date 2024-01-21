@@ -11,8 +11,6 @@ import 'package:groupchat/pages/users_page.dart';
 import 'package:groupchat/theme/theme_provider.dart';
 import 'package:provider/provider.dart';
 
-
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -30,8 +28,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home:AuthPage(),
-        routes: {
+      home: AuthPage(),
+      theme: Provider.of<ThemeProvider>(context).themeData,
+      debugShowCheckedModeBanner: false,
+      routes: {
         '/login_register_page': (context) => const LoginOrRegister(),
         '/home_page': (context) => HomePage(),
         '/profile_page': (context) => ProfilePage(),
@@ -40,5 +40,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-

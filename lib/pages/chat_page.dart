@@ -8,8 +8,13 @@ import 'package:groupchat/services/chat/chat_service.dart';
 class ChatPage extends StatelessWidget {
   final String receivedEmail;
   final String receivedID;
+  final String receivedUsername;
 
-  ChatPage({super.key, required this.receivedEmail, required this.receivedID});
+  ChatPage(
+      {super.key,
+      required this.receivedEmail,
+      required this.receivedID,
+      required this.receivedUsername});
 
   //final text controller
   void sendMessage() async {
@@ -24,7 +29,7 @@ class ChatPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(receivedEmail)),
+      appBar: AppBar(title: Text(receivedUsername)),
       body: Column(
         children: [
           //display all the messages
@@ -61,27 +66,27 @@ class ChatPage extends StatelessWidget {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
     final currentUser = getCurrentUser();
     assert(currentUser != null, "getCurrentUser() should not be null");
-    bool iscurrentUser = data['senderId'] == currentUser!.uid;
+    bool isCurrentUser = data['senderId'] == currentUser!.uid;
     var alignment =
-        iscurrentUser ? Alignment.centerRight : Alignment.centerLeft;
+        isCurrentUser ? Alignment.centerRight : Alignment.centerLeft;
     //align message to the right
     return Container(
         alignment: alignment,
         child: Column(
           crossAxisAlignment:
-              iscurrentUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+              isCurrentUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
           children: [
-            ChatBubble(message: data["message"], iscurrentUser: iscurrentUser)
+            ChatBubble(message: data["message"], isCurrentUser: isCurrentUser)
           ],
         ));
   }
 
   Widget _buildUserInput() {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 50.0),
+      padding: const EdgeInsets.only(bottom: 15, left: 15),
       child: Row(
         children: [
-          //text field should takup most of the spc
+          //text field should take up most of the space
           Expanded(
             child: MyTextfield(
               controller: _messageController,
@@ -90,12 +95,15 @@ class ChatPage extends StatelessWidget {
             ),
           ),
           Container(
-            decoration: BoxDecoration(color: Colors.green,
-            shape: BoxShape.circle),
-            margin: const EdgeInsets.only(right: 25),
+            decoration: const BoxDecoration(
+                color: Colors.green, shape: BoxShape.circle),
+            margin: const EdgeInsets.all(10),
             child: IconButton(
               onPressed: sendMessage,
-              icon: const Icon(Icons.arrow_upward,color: Colors.white,),
+              icon: const Icon(
+                Icons.arrow_upward,
+                color: Colors.white,
+              ),
             ),
           ),
         ],
