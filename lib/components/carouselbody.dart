@@ -29,6 +29,7 @@ class CarouselBody extends StatelessWidget {
     return Container(
       child: CarouselSlider.builder(
         options: CarouselOptions(
+          height:100.0,
           aspectRatio: 16 / 9,
           enlargeCenterPage: false,
           viewportFraction: 0.3,
@@ -39,8 +40,8 @@ class CarouselBody extends StatelessWidget {
           double imageHeight = MediaQuery.of(context).size.height * 0.8 / 2;
 
           return Container(
-            width: imageWidth,
-            height: imageHeight,
+            width: 100.0,
+            height:imageHeight,
             margin: EdgeInsets.symmetric(horizontal: 10),
             child: Stack(
               children: [

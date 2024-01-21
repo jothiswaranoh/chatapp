@@ -1,14 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:groupchat/components/my_back_button.dart';
-import 'package:groupchat/components/my_list_tile.dart';
 import 'package:groupchat/helper/display_message_to_user.dart';
 
+import '../components/my_list_tile.dart';
+
 class UsersPage extends StatelessWidget {
-  UsersPage({super.key});
+  const UsersPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -37,8 +35,8 @@ class UsersPage extends StatelessWidget {
 
           return Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.only(
+              const Padding(
+                padding: EdgeInsets.only(
                   left: 12,
                   top: 12,
                 ),
@@ -51,12 +49,12 @@ class UsersPage extends StatelessWidget {
               Expanded(
                 child: ListView.builder(
                   itemCount: users.length,
-                  padding: EdgeInsets.all(0),
+                  padding: const EdgeInsets.all(0),
                   itemBuilder: ((context, index) {
                     final user = users[index];
                     String userName = user['username'];
                     String email = user["email"];
-                    return My_List_tile(title: userName, subtitle: email);
+                    return MyListTile(title: userName, subtitle: email);
                   }),
                 ),
               ),

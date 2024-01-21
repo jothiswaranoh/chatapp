@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:groupchat/auth/auth.dart';
 import 'package:groupchat/auth/login_or_register.dart';
 import 'package:groupchat/firebase_options.dart';

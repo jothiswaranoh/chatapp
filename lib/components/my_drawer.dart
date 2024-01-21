@@ -1,10 +1,9 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:provider/provider.dart';
 import 'package:groupchat/components/space.dart';
-import 'package:groupchat/pages/home_page.dart';
 import 'package:groupchat/theme/dark_mode.dart';
 
 import '../theme/theme_provider.dart';
@@ -43,7 +42,7 @@ class _MyDrawerState extends State<MyDrawer> {
                 leading: Icon(Icons.home),
                 title: Text("H O M E"),
                 onTap: () {
-                  // this is alread HomePage
+                  // this is  HomePage
                   Navigator.pop(context);
                 },
               ),
@@ -55,7 +54,7 @@ class _MyDrawerState extends State<MyDrawer> {
                 leading: Icon(Icons.person),
                 title: const Text("P R O F I L E"),
                 onTap: () {
-                  // this is alread HomePage
+                  // this is  HomePage
                   Navigator.pop(context);
                   Navigator.pushNamed(context, '/profile_page');
                 },
@@ -68,7 +67,7 @@ class _MyDrawerState extends State<MyDrawer> {
                 leading: Icon(Icons.group),
                 title: const Text("U S E R S"),
                 onTap: () {
-                  // this is alread HomePage
+                  // this is  HomePage
                   Navigator.pop(context);
                   Navigator.pushNamed(context, '/users_page');
                 },
@@ -85,27 +84,25 @@ class _MyDrawerState extends State<MyDrawer> {
                 leading: Icon(Icons.home),
                 title: Text("L O G O U T"),
                 onTap: () {
-                  // this is alread HomePage
+                  // this is  HomePage
                   Navigator.pop(context);
                   logout();
                 },
               ),
-              Container(
-                  child: Padding(
-                padding: const EdgeInsets.only(right: 8.0),
-                child: Switch(
-                  value: Provider.of<ThemeProvider>(context).themeData ==
-                      darktMode,
-                  onChanged: (value) {
-                    Provider.of<ThemeProvider>(context, listen: false)
-                        .toggleTheme();
-                  },
-                ),
-              )),
+              Padding(
+                              padding: const EdgeInsets.only(right: 8.0),
+                              child: Switch(
+              value: Provider.of<ThemeProvider>(context).themeData ==
+                  darktMode,
+              onChanged: (value) {
+                Provider.of<ThemeProvider>(context, listen: false)
+                    .toggleTheme();
+              },
+                              ),
+                            ),
             ],
           ),
         ),
-
       ]),
     );
   }

@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 
 class MyButton extends StatelessWidget {
   final String text;
   final void Function()? onTap;
 
-  MyButton({
+  const MyButton({
     Key? key,
     required this.text,
     required this.onTap,
