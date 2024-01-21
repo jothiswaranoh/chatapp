@@ -7,7 +7,6 @@ import '../components/space.dart';
 import '../helper/display_message_to_user.dart';
 import 'package:groupchat/controller/comman.dart';
 
-
 class LoginPage extends StatefulWidget {
   final void Function()? onTap;
   LoginPage({super.key, required this.onTap});
@@ -18,7 +17,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   void login_page() {
-    login(context,emailController,passwordController);
+    login(context, emailController, passwordController);
   }
 
   TextEditingController emailController = TextEditingController();
@@ -34,7 +33,8 @@ class _LoginPageState extends State<LoginPage> {
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(25.0),
-          child: Column(mainAxisAlignment: MainAxisAlignment.center,
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               //logo
               children: [
                 Icon(
@@ -49,7 +49,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 //app name
                 const Text(
-                  "S O C I A L M E D I A",
+                  "C H A T  A P P",
                   style: TextStyle(fontSize: 20),
                 ),
 

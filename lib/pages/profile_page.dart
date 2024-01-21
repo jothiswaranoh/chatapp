@@ -3,18 +3,19 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:groupchat/components/my_back_button.dart';
 import 'package:groupchat/components/my_textfield_edit.dart';
 import 'package:groupchat/components/space.dart';
 import 'package:groupchat/controller/comman.dart';
 import 'package:groupchat/model/firestore.dart';
-import 'package:groupchat/components/my_list_tile.dart';
+
+import '../components/my_list_tile.dart';
 
 
 
 class ProfilePage extends StatefulWidget {
+  const ProfilePage({super.key});
+
   @override
   State<ProfilePage> createState() => _ProfilePageState();
 }
@@ -67,7 +68,7 @@ Future<void> editField(BuildContext context, String field) async {
           onPressed: () {
             Navigator.of(context).pop(newValue); // Close the dialog with the value
               // Only update the value if 'Save' was pressed
-  if (newValue.trim().length > 0) {
+  if (newValue.trim().isNotEmpty) {
     usersCollection.doc(currentUser!.email).update({field: newValue});
     print('New value: $newValue');
      setState(() {});
@@ -109,98 +110,94 @@ Future<void> editField(BuildContext context, String field) async {
   }
 
   Widget buildUserProfile(BuildContext context, Map<String, dynamic>? user) {
-    return Container(
-      child: Center(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(
-                left: 12,
-                top: 12,
-              ),
-              child: Row(
-                children: [
-                  MyBackButton(),
-                ],
-              ),
+    return Center(
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(
+              left: 12,
+              top: 12,
             ),
-            Container(
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primary,
-                borderRadius: BorderRadius.circular(24),
-              ),
-              padding: const EdgeInsets.all(25),
-              child: const Icon(
-                Icons.person,
-                size: 64,
-              ),
+            child: Row(
+              children: const [
+                MyBackButton(),
+              ],
             ),
-            Space(
-              inputHeight: 25,
+          ),
+          Container(
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.primary,
+              borderRadius: BorderRadius.circular(24),
             ),
-            Text(
-              user?['username'] ?? 'Username not available',
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
+            padding: const EdgeInsets.all(25),
+            child: const Icon(
+              Icons.person,
+              size: 64,
             ),
-            Space(
-              inputHeight: 25,
+          ),
+          Space(
+            inputHeight: 25,
+          ),
+          Text(
+            user?['username'] ?? 'Username not available',
+            style: const TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
             ),
-            Text(
-              user?['email'] ?? 'Email not available',
-              style: const TextStyle(
-                color: Colors.grey,
-              ),
+          ),
+          Space(
+            inputHeight: 25,
+          ),
+          Text(
+            user?['email'] ?? 'Email not available',
+            style: const TextStyle(
+              color: Colors.grey,
             ),
-            Space(
-              inputHeight: 50,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 10.0),
-              child: Text("My Details",
-                  style: TextStyle(color: Color.fromARGB(255, 215, 215, 215))),
-            ),
-
-            //username
-            MyTextFieldEdit(
-              text: user?['username'],
-              sectionName: 'Username',
-              onpressed: () => editField(context, 'username'),
-            ),
-            //bio
-            MyTextFieldEdit(
-              text: user?['bio'],
-              sectionName: 'bio',
-              onpressed: () => editField(context, 'bio'),
-            ),
-            //userpost
-            Padding(
-              padding: const EdgeInsets.only(left: 10.0),
-              child: Text("Posts",
-                  style: TextStyle(color: Color.fromARGB(255, 215, 215, 215))),
-            ),
-          ],
-        ),
+          ),
+          Space(
+            inputHeight: 50,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 10.0),
+            child: Text("My Details",
+                style: TextStyle(color: Color.fromARGB(255, 215, 215, 215))),
+          ),
+    
+          //username
+          MyTextFieldEdit(
+            text: user?['username'],
+            sectionName: 'Username',
+            onpressed: () => editField(context, 'username'),
+          ),
+          //bio
+          MyTextFieldEdit(
+            text: user?['bio'],
+            sectionName: 'bio',
+            onpressed: () => editField(context, 'bio'),
+          ),
+          //userpost
+          Padding(
+            padding: const EdgeInsets.only(left: 10.0),
+            child: Text("Posts",
+                style: TextStyle(color: Color.fromARGB(255, 215, 215, 215))),
+          ),
+        ],
       ),
     );
   }
 
   Widget buildPostList(List<QueryDocumentSnapshot> posts) {
-    return Container(
-      child: ListView.builder(
-        itemCount: posts.length,
-        itemBuilder: (context, index) {
-          final post = posts[index];
-          String message = post['PostMessage'];
-          String userEmail = post['UserEmail'];
-          return My_List_tile(
-            title: message,
-            subtitle: userEmail,
-          );
-        },
-      ),
+    return ListView.builder(
+      itemCount: posts.length,
+      itemBuilder: (context, index) {
+        final post = posts[index];
+        String message = post['PostMessage'];
+        String userEmail = post['UserEmail'];
+        return MyListTile(
+          title: message,
+          subtitle: userEmail,
+        );
+      },
     );
   }
 }

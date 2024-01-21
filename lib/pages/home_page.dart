@@ -4,7 +4,6 @@ import 'package:groupchat/components/carouselbody.dart';
 import 'package:groupchat/components/my_drawer.dart';
 import 'package:groupchat/components/user_tile.dart';
 import 'package:groupchat/pages/chat_page.dart';
-import 'package:groupchat/auth/auth.dart';
 import 'package:groupchat/services/chat/chat_service.dart';
 import 'package:groupchat/variables/app_colors.dart';
 import 'package:flutter/material.dart';
@@ -21,9 +20,13 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor:
             AppColors.mainBackground, // Match the Scaffold background color
+
         title: const Text(
-          'Chating App',
-          style: TextStyle(color: AppColors.white),
+          'Chatting App',
+          style: TextStyle(
+            color: AppColors.white,
+            fontSize: 26,
+          ),
         ),
         bottom: PreferredSize(
           preferredSize:
@@ -40,8 +43,13 @@ class HomePage extends StatelessWidget {
                   child: TextField(
                     decoration: const InputDecoration(
                       hintText: 'Search...',
+                      hintStyle: TextStyle(
+                          color: Colors.black), // Set the hint text color
                       border: InputBorder.none,
-                      prefixIcon: Icon(Icons.search),
+                      prefixIcon: Icon(
+                        Icons.search,
+                        color: Colors.black,
+                      ),
                     ),
                   ),
                 ),
@@ -62,14 +70,13 @@ class HomePage extends StatelessWidget {
                 "Group chat",
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: 26,
+                  fontSize: 25,
                   // Add other styles as needed
                 ),
               ),
             ),
           ),
           CarouselBody(),
-          const SizedBox(height: 20),
           Align(
             alignment: Alignment.centerLeft,
             child: Padding(
@@ -78,7 +85,7 @@ class HomePage extends StatelessWidget {
                 "Chats",
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: 26,
+                  fontSize: 25,
                 ),
               ),
             ),
@@ -116,17 +123,15 @@ class HomePage extends StatelessWidget {
 //build each items
 
 Widget _buildUserListItem(Map<String, dynamic> userData, BuildContext context) {
-
-
-  
-  //disaplay expect curretn user
-  //check this email does not eqaul to the current user.
+  //display expect current user
+  //check this email does not equal to the current user.
   return UserTile(
-      text: userData["email"],
+      text: userData["username"],
       onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (_) => ChatPage(
+              receivedUsername: userData['username'],
               receivedEmail: userData['email'],
               receivedID: userData['uid'],
             ),

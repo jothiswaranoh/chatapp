@@ -4,14 +4,14 @@ class UserTile extends StatelessWidget {
   final String text;
   final void Function()? onTap;
 
-  UserTile({Key? key, required this.text, required this.onTap}) : super(key: key);
+  const UserTile({Key? key, required this.text, required this.onTap}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.background,
           borderRadius: BorderRadius.circular(10),
@@ -20,11 +20,11 @@ class UserTile extends StatelessWidget {
               color: Colors.black.withOpacity(0.1),
               spreadRadius: 1,
               blurRadius: 5,
-              offset: Offset(0, 3),
+              offset: const Offset(0, 3),
             ),
           ],
         ),
-        padding: EdgeInsets.all(12),
+        padding: const EdgeInsets.all(12),
         child: Row(
           children: [
             CircleAvatar(
@@ -34,7 +34,7 @@ class UserTile extends StatelessWidget {
                 color: Theme.of(context).colorScheme.onPrimary,
               ),
             ),
-            SizedBox(width: 12),
+            const SizedBox(width: 12),
             Text(
               text,
               style: TextStyle(

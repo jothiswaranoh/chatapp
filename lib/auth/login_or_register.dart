@@ -1,4 +1,3 @@
-import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:groupchat/pages/login_page.dart';
 import 'package:groupchat/pages/register_page.dart';
@@ -12,7 +11,6 @@ class LoginOrRegister extends StatefulWidget {
 
 class _LoginOrRegisterState extends State<LoginOrRegister> {
  bool showLoginPage = true;
- 
  void togglepages(){
   setState(() {
     showLoginPage = !showLoginPage;

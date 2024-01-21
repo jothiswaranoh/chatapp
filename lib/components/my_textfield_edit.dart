@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 
 class MyTextFieldEdit extends StatelessWidget {
   MyTextFieldEdit({super.key, required this.text, required this.sectionName,required this.onpressed});
@@ -35,7 +33,7 @@ class MyTextFieldEdit extends StatelessWidget {
             ],
           ),
 // text
-          Text(text, style: TextStyle(color: Colors.black)),
+          Text(text, style: const TextStyle(color: Colors.black)),
         ],
       ),
     );
