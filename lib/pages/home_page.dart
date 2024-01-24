@@ -2,131 +2,143 @@
 
 import 'package:groupchat/components/carouselbody.dart';
 import 'package:groupchat/components/my_drawer.dart';
-import 'package:groupchat/components/user_tile.dart';
+import 'package:groupchat/components/my_chat_list.dart';
 import 'package:groupchat/pages/chat_page.dart';
 import 'package:groupchat/services/chat/chat_service.dart';
 import 'package:groupchat/variables/app_colors.dart';
 import 'package:flutter/material.dart';
+import '../helper/capitalize_text.dart';
 
 class HomePage extends StatelessWidget {
-  HomePage({super.key});
+  HomePage({Key? key}) : super(key: key);
 
   final ChatService _chatService = ChatService();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.mainBackground,
-      appBar: AppBar(
-        backgroundColor:
-            AppColors.mainBackground, // Match the Scaffold background color
+      appBar: _buildAppBar(context),
+      drawer: const MyDrawer(),
+      body: _buildBody(context),
+    );
+  }
 
-        title: const Text(
-          'Chatting App',
-          style: TextStyle(
-            color: AppColors.white,
-            fontSize: 26,
-          ),
-        ),
-        bottom: PreferredSize(
-          preferredSize:
-              const Size.fromHeight(36.0), // Adjust the height as needed
-          child: Row(
-            children: [
-              Expanded(
-                child: Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 16.0),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  child: TextField(
-                    decoration: const InputDecoration(
-                      hintText: 'Search...',
-                      hintStyle: TextStyle(
-                          color: Colors.black), // Set the hint text color
-                      border: InputBorder.none,
-                      prefixIcon: Icon(
-                        Icons.search,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
+  PreferredSizeWidget _buildAppBar(BuildContext context) {
+    return AppBar(
+      backgroundColor: AppColors.appBarColor,
+      title: const Text(
+        'Chatting App',
+        style: TextStyle(
+          color: AppColors.appTextColor,
+          fontWeight: FontWeight.bold,
+          fontSize: 28,
         ),
       ),
-      drawer: MyDrawer(),
-      body: Column(
+    );
+  }
+
+  PreferredSizeWidget _buildSearchBar(BuildContext context) {
+    return PreferredSize(
+      preferredSize: const Size.fromHeight(36.0),
+      child: Row(
         children: [
-          const SizedBox(height: 20),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 8.0),
-              child: Text(
-                "Group chat",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 25,
-                  // Add other styles as needed
+          Expanded(
+            child:
+             Container(
+              margin: const EdgeInsets.symmetric(horizontal: 15.0),
+              decoration: BoxDecoration(
+                border: Border.all(color: AppColors.appTextColor),
+                borderRadius: BorderRadius.circular(15.0),
+                boxShadow: [
+                BoxShadow(
+                  color: AppColors.appTextColor.withOpacity(0.1), // Shadow color
+                  spreadRadius: 2,
+                  blurRadius: 5,
+                  offset: Offset(0, 4), // Shadow offset
+                ),
+              ],
+              ),
+              child:
+               TextField(
+                decoration: InputDecoration(
+                  hintText: 'Search...',
+                  hintStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
+                  border: InputBorder.none,
+                  prefixIcon: Icon(
+                    Icons.search,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
                 ),
               ),
             ),
           ),
-          CarouselBody(),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 8.0),
-              child: Text(
-                "Chats",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 25,
-                ),
-              ),
-            ),
-          ),
-          _buildUserList()
         ],
       ),
     );
   }
 
-  Widget _buildUserList() {
-    return Expanded(
-      child: StreamBuilder(
-          stream: _chatService.getUsersStream(),
-          builder: (context, snapshot) {
-            //if any error
-            if (snapshot.hasError) {
-              return const Text("error");
-            }
+  Widget _buildBody(BuildContext context) {
+    return Column(
+      children: [
+        const SizedBox(height: 20),
+        _buildSearchBar(context),
+        const SizedBox(height: 10),
+        _buildSectionTitle("Group chat", context),
+        SizedBox(height: 5),
+        CarouselBody(),
+        SizedBox(height: 5),
 
-            //loading
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            return ListView(
-                children: snapshot.data!
-                    .map<Widget>(
-                        (userData) => _buildUserListItem(userData, context))
-                    .toList());
-          }),
+        _buildSectionTitle("Chats", context),
+        _buildChatList(),
+      ],
     );
   }
-}
 
-//build each items
+  Widget _buildSectionTitle(String title, BuildContext context) {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Padding(
+        padding: const EdgeInsets.only(left: 12.0),
+        child: Text(
+          title,
+          style: const TextStyle(
+            color: AppColors.appTextColor,
+            fontSize: 25,
+          ),
+        ),
+      ),
+    );
+  }
 
-Widget _buildUserListItem(Map<String, dynamic> userData, BuildContext context) {
-  //display expect current user
-  //check this email does not equal to the current user.
-  return UserTile(
-      text: userData["username"],
+  Widget _buildChatList() {
+    return Expanded(
+      child: StreamBuilder(
+        stream: _chatService.getUsersStream(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return const Text("Error");
+          }
+
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          return ListView(
+            children: snapshot.data!
+                .map<Widget>(
+                  (userData) => _buildChatListItem(userData, context),
+                )
+                .toList(),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildChatListItem(
+      Map<String, dynamic> userData, BuildContext context) {
+    return ChatList(
+      text: capitalizeText(userData["username"]),
       onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute(
@@ -137,5 +149,18 @@ Widget _buildUserListItem(Map<String, dynamic> userData, BuildContext context) {
             ),
           ),
         );
-      });
+      },
+    );
+  }
 }
+
+
+// decoration: BoxDecoration(
+//                 gradient: const LinearGradient(
+//                   colors: [
+//                     AppColors.appBarColor,
+//                     Color.fromARGB(255, 203, 252, 147),
+//                   ],
+//                 ),
+//                 borderRadius: BorderRadius.circular(15.0),
+//               ),

@@ -4,37 +4,47 @@ import 'package:groupchat/components/chat_bubble.dart';
 import 'package:groupchat/components/my_textfield.dart';
 import 'package:groupchat/controller/comman.dart';
 import 'package:groupchat/services/chat/chat_service.dart';
+import '../variables/app_colors.dart';
+import '../helper/capitalize_text.dart';
 
 class ChatPage extends StatelessWidget {
   final String receivedEmail;
   final String receivedID;
   final String receivedUsername;
 
-  ChatPage(
-      {super.key,
-      required this.receivedEmail,
-      required this.receivedID,
-      required this.receivedUsername});
+  ChatPage({
+    Key? key,
+    required this.receivedEmail,
+    required this.receivedID,
+    required this.receivedUsername,
+  }) : super(key: key);
 
-  //final text controller
+  final TextEditingController _messageController = TextEditingController();
+  final ChatService _chatService = ChatService();
+
   void sendMessage() async {
     if (_messageController.text.isNotEmpty) {
-      await ChatService().sendMessage(receivedID, _messageController.text);
+      await _chatService.sendMessage(receivedID, _messageController.text);
       _messageController.clear();
     }
   }
 
-  final TextEditingController _messageController = TextEditingController();
-  final ChatService _chatService = ChatService();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(receivedUsername)),
+      appBar: AppBar(
+          backgroundColor: AppColors.appBarColor,
+          title: Text(
+            capitalizeText(receivedUsername),
+            style: const TextStyle(
+              color: AppColors.appTextColor,
+              fontSize: 28,
+            ),
+          )),
       body: Column(
         children: [
-          //display all the messages
+          const SizedBox(height: 10),
           Expanded(child: _buildMessageList()),
-          //user input
           _buildUserInput(),
         ],
       ),
@@ -43,70 +53,92 @@ class ChatPage extends StatelessWidget {
 
   Widget _buildMessageList() {
     final currentUser = getCurrentUser();
-    assert(currentUser != null, "getCurrentUser() should not be null");
-    String senderId = currentUser!.uid;
+    if (currentUser == null) {
+      // Handle the case where currentUser is null
+      return const Text("Error: currentUser is null");
+    }
+
+    String senderId = currentUser.uid;
+
     return StreamBuilder(
-        stream: _chatService.getMessages(receivedID, senderId),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Text("error");
-          }
-          //loading
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Text("Loading ..");
-          }
-          return ListView(
-              children: snapshot.data!.docs
-                  .map((doc) => _buildMessageItem(doc))
-                  .toList());
-        });
+      stream: _chatService.getMessages(receivedID, senderId),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return const Text("Error");
+        }
+
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Text("Loading...");
+        }
+
+        return ListView(
+          children:
+              snapshot.data!.docs.map((doc) => _buildMessageItem(doc)).toList(),
+        );
+      },
+    );
   }
 
   Widget _buildMessageItem(DocumentSnapshot doc) {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
     final currentUser = getCurrentUser();
-    assert(currentUser != null, "getCurrentUser() should not be null");
-    bool isCurrentUser = data['senderId'] == currentUser!.uid;
+
+    if (currentUser == null) {
+      // Handle the case where currentUser is null
+      return const Text("Error: currentUser is null");
+    }
+
+    bool isCurrentUser = data['senderId'] == currentUser.uid;
     var alignment =
         isCurrentUser ? Alignment.centerRight : Alignment.centerLeft;
-    //align message to the right
+
     return Container(
-        alignment: alignment,
-        child: Column(
-          crossAxisAlignment:
-              isCurrentUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-          children: [
-            ChatBubble(message: data["message"], isCurrentUser: isCurrentUser)
-          ],
-        ));
+      alignment: alignment,
+      child: Column(
+        crossAxisAlignment:
+            isCurrentUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+        children: [
+          ChatBubble(message: data["message"], isCurrentUser: isCurrentUser),
+        ],
+      ),
+    );
   }
 
   Widget _buildUserInput() {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 15, left: 15),
-      child: Row(
-        children: [
-          //text field should take up most of the space
-          Expanded(
-            child: MyTextfield(
-              controller: _messageController,
-              hintText: "Type a message",
-              obscureText: false,
-            ),
+    return Container(
+      padding: const EdgeInsets.only(bottom: 20.0, right: 10.0, left: 10.0),
+      child: Material(
+        elevation: 5.0,
+        borderRadius: BorderRadius.circular(20),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
           ),
-          Container(
-            decoration: const BoxDecoration(
-                color: Colors.green, shape: BoxShape.circle),
-            margin: const EdgeInsets.all(10),
-            child: IconButton(
-              onPressed: sendMessage,
-              icon: const Icon(
-                Icons.arrow_upward,
-                color: Colors.white,
+          padding: const EdgeInsets.only(left: 15),
+          child: Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  decoration: const InputDecoration(
+                    border: InputBorder.none,
+                    hintText: "Type a message",
+                    hintStyle: TextStyle(color: AppColors.blackColor),
+                  ),
+                  controller: _messageController,
+                ),
               ),
-            ),
+              IconButton(
+                onPressed: sendMessage,
+                icon: const Icon(
+                  Icons.send,
+                  color: AppColors.appTextColor,
+                  size: 30.0,
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

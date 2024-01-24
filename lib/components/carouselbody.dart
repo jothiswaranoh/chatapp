@@ -1,7 +1,6 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:groupchat/variables/app_colors.dart';
 
 class CarouselBody extends StatelessWidget {
   final List<String> imgList = [
@@ -34,41 +33,59 @@ class CarouselBody extends StatelessWidget {
       children: [
         CarouselSlider.builder(
           options: CarouselOptions(
-            height: 120.0,
+            height: 130.0,
             aspectRatio: 16 / 9,
             enlargeCenterPage: false,
-            viewportFraction: 0.3,
+            viewportFraction: 0.33,
           ),
           itemCount: imgList.length,
           itemBuilder: (context, index, realIdx) {
             return Container(
-              width: 80.0,
-              margin: const EdgeInsets.symmetric(horizontal: 40),
-              child: Column(
-                children: [
-                  const SizedBox(height: 10),
-                  SizedBox(
-                    height: 70, // Adjust the height as needed
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(50),
-                      child: Image.network(
-                        imgList[index],
-                        width: double.infinity,
-                        height: double.infinity,
-                        fit: BoxFit.cover,
+              width: 150.0,
+              margin: const EdgeInsets.symmetric(horizontal: 5),
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: AppColors.appTextColor,
+                ),
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                BoxShadow(
+                  color: AppColors.appTextColor.withOpacity(0.1), // Shadow color
+                  spreadRadius: 2,
+                  blurRadius: 5,
+                  offset: Offset(0, 4), // Shadow offset
+                ),],
+              ),
+              child: Padding(
+                padding:
+                    const EdgeInsets.all(8.0), // Adjust the padding as needed
+                child: Column(
+                  children: [
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      height: 70,
+                      width: 70,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(50),
+                        child: Image.network(
+                          imgList[index],
+                          width: double.infinity,
+                          height: double.infinity,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 10), // Add any spacing needed
-                  Text(
-                    captions[index],
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
+                    const SizedBox(height: 10),
+                    Text(
+                      captions[index],
+                      style: const TextStyle(
+                        color: AppColors.appTextColor,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             );
           },

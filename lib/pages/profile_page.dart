@@ -5,13 +5,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:groupchat/components/my_back_button.dart';
 import 'package:groupchat/components/my_textfield_edit.dart';
-import 'package:groupchat/components/space.dart';
 import 'package:groupchat/controller/comman.dart';
 import 'package:groupchat/model/firestore.dart';
-
-import '../components/my_list_tile.dart';
-
-
+import '../components/my_users_list.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -28,63 +24,64 @@ class _ProfilePageState extends State<ProfilePage> {
   User? currentUser = getCurrentUser();
 
   // Future<void> editField(BuildContext context, String field) async {
-Future<void> editField(BuildContext context, String field) async {
-  String newValue = ''; // Initialize newValue with an empty string
-  await showDialog(
-    context: context,
-    builder: (context) => AlertDialog(
-      title: Text(
-        "Edit $field",
-        style: TextStyle(color: Colors.white),
-      ),
-      content: TextField(
-        autofocus: true,
-        style: TextStyle(color: Colors.white),
-        decoration: InputDecoration(
-          hintText: "Enter new $field",
-          hintStyle: TextStyle(color: Colors.grey),
-          enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.grey),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.blue),
-          ),
+  Future<void> editField(BuildContext context, String field) async {
+    String newValue = ''; // Initialize newValue with an empty string
+    await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(
+          "Edit $field",
+          style: TextStyle(color: Colors.white),
         ),
-        onChanged: (value) {
-          newValue = value;
-        },
-      ),
-      actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.of(context).pop(); // Close the dialog without updating
+        content: TextField(
+          autofocus: true,
+          style: TextStyle(color: Colors.white),
+          decoration: InputDecoration(
+            hintText: "Enter new $field",
+            hintStyle: TextStyle(color: Colors.grey),
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.grey),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.blue),
+            ),
+          ),
+          onChanged: (value) {
+            newValue = value;
           },
-          child: Text(
-            'Cancel',
-            style: TextStyle(color: Colors.white),
-          ),
         ),
-        ElevatedButton(
-          onPressed: () {
-            Navigator.of(context).pop(newValue); // Close the dialog with the value
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(); // Close the dialog without updating
+            },
+            child: Text(
+              'Cancel',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context)
+                  .pop(newValue); // Close the dialog with the value
               // Only update the value if 'Save' was pressed
-  if (newValue.trim().isNotEmpty) {
-    usersCollection.doc(currentUser!.email).update({field: newValue});
-    print('New value: $newValue');
-     setState(() {});
-  }
-          },
-          child: Text(
-            'Save',
-            style: TextStyle(color: Colors.white),
+              if (newValue.trim().isNotEmpty) {
+                usersCollection
+                    .doc(currentUser!.email)
+                    .update({field: newValue});
+                print('New value: $newValue');
+                setState(() {});
+              }
+            },
+            child: Text(
+              'Save',
+              style: TextStyle(color: Colors.white),
+            ),
           ),
-        ),
-      ],
-    ),
-  );
-
-
-}
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -135,9 +132,7 @@ Future<void> editField(BuildContext context, String field) async {
               size: 64,
             ),
           ),
-          Space(
-            inputHeight: 25,
-          ),
+          SizedBox(height: 25),
           Text(
             user?['username'] ?? 'Username not available',
             style: const TextStyle(
@@ -145,35 +140,32 @@ Future<void> editField(BuildContext context, String field) async {
               fontWeight: FontWeight.bold,
             ),
           ),
-          Space(
-            inputHeight: 25,
-          ),
+          SizedBox(height: 25),
+
           Text(
             user?['email'] ?? 'Email not available',
             style: const TextStyle(
               color: Colors.grey,
             ),
           ),
-          Space(
-            inputHeight: 50,
-          ),
+          SizedBox(height: 50),
+
           Padding(
             padding: const EdgeInsets.only(left: 10.0),
             child: Text("My Details",
                 style: TextStyle(color: Color.fromARGB(255, 215, 215, 215))),
           ),
-    
           //username
           MyTextFieldEdit(
             text: user?['username'],
             sectionName: 'Username',
-            onpressed: () => editField(context, 'username'),
+            onPressed: () => editField(context, 'username'),
           ),
           //bio
           MyTextFieldEdit(
             text: user?['bio'],
             sectionName: 'bio',
-            onpressed: () => editField(context, 'bio'),
+            onPressed: () => editField(context, 'bio'),
           ),
           //userpost
           Padding(
@@ -193,7 +185,7 @@ Future<void> editField(BuildContext context, String field) async {
         final post = posts[index];
         String message = post['PostMessage'];
         String userEmail = post['UserEmail'];
-        return MyListTile(
+        return MyUsersList(
           title: message,
           subtitle: userEmail,
         );

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:groupchat/variables/app_colors.dart';
 
-class UserTile extends StatelessWidget {
+class ChatList extends StatelessWidget {
   final String text;
   final void Function()? onTap;
 
-  const UserTile({Key? key, required this.text, required this.onTap}) : super(key: key);
+  const ChatList({Key? key, required this.text, required this.onTap}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +41,7 @@ class UserTile extends StatelessWidget {
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.onBackground,
+                color: AppColors.appTextColor,
               ),
             ),
           ],

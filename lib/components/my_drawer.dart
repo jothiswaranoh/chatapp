@@ -1,11 +1,9 @@
 // ignore_for_file: prefer_const_constructors
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:groupchat/components/space.dart';
 import 'package:groupchat/theme/dark_mode.dart';
-
+import '../variables/app_colors.dart';
 import '../theme/theme_provider.dart';
 
 class MyDrawer extends StatefulWidget {
@@ -20,90 +18,90 @@ class _MyDrawerState extends State<MyDrawer> {
     FirebaseAuth.instance.signOut();
   }
 
-  void ontap() {
+  void onTap(BuildContext context) {
     Provider.of<ThemeProvider>(context, listen: false).toggleTheme();
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Drawer(
-      backgroundColor: Theme.of(context).colorScheme.background,
-      child:
-          Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        Column(
-          children: [
-            DrawerHeader(
-              child: Icon(Icons.favorite),
-            ),
-            Space(inputHeight: 25),
-            Padding(
-              padding: const EdgeInsets.only(left: 25.0),
-              child: ListTile(
-                leading: Icon(Icons.home),
-                title: Text("H O M E"),
-                onTap: () {
-                  // this is  HomePage
-                  Navigator.pop(context);
-                },
-              ),
-            ),
-            Space(inputHeight: 25),
-            Padding(
-              padding: const EdgeInsets.only(left: 25.0),
-              child: ListTile(
-                leading: Icon(Icons.person),
-                title: const Text("P R O F I L E"),
-                onTap: () {
-                  // this is  HomePage
-                  Navigator.pop(context);
-                  Navigator.pushNamed(context, '/profile_page');
-                },
-              ),
-            ),
-            Space(inputHeight: 25),
-            Padding(
-              padding: const EdgeInsets.only(left: 25),
-              child: ListTile(
-                leading: Icon(Icons.group),
-                title: const Text("U S E R S"),
-                onTap: () {
-                  // this is  HomePage
-                  Navigator.pop(context);
-                  Navigator.pushNamed(context, '/users_page');
-                },
-              ),
-            ),
+  Widget build(BuildContext context) => Drawer(
+    backgroundColor: AppColors.appTextColor,
+    shadowColor: AppColors.blackColor,
+          child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            buildHeader(context),
+            buildMenuItems(context),
           ],
         ),
-        Padding(
-          padding: const EdgeInsets.only(left: 25.0, bottom: 25),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              ListTile(
-                leading: Icon(Icons.home),
-                title: Text("L O G O U T"),
-                onTap: () {
-                  // this is  HomePage
-                  Navigator.pop(context);
-                  logout();
-                },
-              ),
-              Padding(
-                              padding: const EdgeInsets.only(right: 8.0),
-                              child: Switch(
-              value: Provider.of<ThemeProvider>(context).themeData ==
-                  darktMode,
-              onChanged: (value) {
-                Provider.of<ThemeProvider>(context, listen: false)
-                    .toggleTheme();
-              },
-                              ),
-                            ),
-            ],
-          ),
+      ));
+}
+
+Widget buildHeader(BuildContext context) => Container(
+      color: AppColors.appBarColor,
+      padding: EdgeInsets.only(
+        top: MediaQuery.of(context).padding.top,
+      ),
+      child: const Column(children: [
+        SizedBox(height: 10),
+        Image(image: AssetImage("../assets/logo.png"),width: 100,height: 100,fit: BoxFit.cover,),
+        SizedBox(height: 12),
+        Text(
+          'CHATTING APP',
+          style: TextStyle(fontSize: 28, color: AppColors.appTextColor,fontWeight: FontWeight.bold,),
         ),
+        SizedBox(height: 12),
       ]),
     );
-  }
+
+Widget buildMenuItems(BuildContext context) => Container(
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        children: [
+          Wrap(
+            runSpacing: 16,
+            children: [
+              buildListTile(Icons.home, "H O M E", "", context),
+              buildListTile(
+                  Icons.person, "P R O F I L E", "/profile_page", context),
+              buildListTile(Icons.group, "U S E R S", "/users_page", context),
+              SizedBox(height: MediaQuery.of(context).size.height / 2.2),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  buildListTile(
+                      Icons.logout_outlined, "L O G O U T", "", context),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: Switch(
+                      value: Provider.of<ThemeProvider>(context).themeData ==
+                          darktMode,
+                      onChanged: (value) {
+                        Provider.of<ThemeProvider>(context, listen: false)
+                            .toggleTheme();
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+
+ListTile buildListTile(
+    IconData icon, String title, String route, BuildContext context) {
+  return ListTile(
+    leading: Icon(icon),
+    title: Text(title),
+    onTap: () {
+      Navigator.pop(context);
+      if (route.isNotEmpty) {
+        Navigator.pushNamed(context, route);
+      } else {
+        FirebaseAuth.instance.signOut();
+      }
+    },
+  );
 }

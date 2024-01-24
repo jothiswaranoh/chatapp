@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 
 class MyTextFieldEdit extends StatelessWidget {
-  MyTextFieldEdit({super.key, required this.text, required this.sectionName,required this.onpressed});
+  MyTextFieldEdit(
+      {super.key,
+      required this.text,
+      required this.sectionName,
+      required this.onPressed});
   final String text;
   final String sectionName;
-  void Function()? onpressed;
+  void Function()? onPressed;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -25,7 +29,7 @@ class MyTextFieldEdit extends StatelessWidget {
                 style: TextStyle(color: Colors.grey[500]),
               ),
               IconButton(
-                  onPressed: onpressed,
+                  onPressed: onPressed,
                   icon: Icon(
                     Icons.settings,
                     color: Colors.grey[400],
