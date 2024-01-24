@@ -1,4 +1,6 @@
 // auth_service.dart
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -8,9 +10,44 @@ import 'package:groupchat/components/my_drawer.dart';
 import 'package:groupchat/components/my_textfield.dart';
 import 'package:groupchat/model/firestore.dart';
 import 'package:groupchat/controller/comman.dart';
+import 'package:groupchat/services/user_list.dart';
 import '../helper/display_message_to_user.dart';
 
 final FirebaseFirestore _firestore= FirebaseFirestore.instance;
+Future<List<Map<String, dynamic>>> getAllUsernames() async {
+    try {
+      QuerySnapshot<Map<String, dynamic>> usersSnapshot = await FirebaseFirestore.instance
+          .collection("Users")
+          .get();
+
+      List<Map<String, dynamic>> userList = [];
+
+      for (QueryDocumentSnapshot<Map<String, dynamic>> userDoc in usersSnapshot.docs) {
+        Map<String, dynamic> userData = userDoc.data();
+        String uid = userData['uid'];
+        String username = userData['username'];
+        userList.add({
+          'uid': uid,
+          'username': username,
+        });
+      }
+      return userList;
+    } catch (e) {
+      print("Error getting all usernames: $e");
+      return [];
+    }
+  }
+
+  void createGroupAndSave(String groupName, List<UserList> selectedUsers) async {
+  // Extract the list of user IDs from the selectedUsers list
+  List<String> memberUserIDs = selectedUsers.map((user) => user.uid).toList();
+
+  // Call the createGroup method with the groupName and memberUserIDs
+  // String chatRoomID = await createGroup(groupName, memberUserIDs);
+
+  // Optionally, you can do something with the chatRoomID if needed
+  print('Group chat room created with ID: $memberUserIDs');
+}
 
 void postMessage(TextEditingController newPostController) {
   if (newPostController.text.isNotEmpty) {

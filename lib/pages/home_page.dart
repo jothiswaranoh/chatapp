@@ -5,22 +5,106 @@ import 'package:groupchat/components/my_drawer.dart';
 import 'package:groupchat/components/user_tile.dart';
 import 'package:groupchat/pages/chat_page.dart';
 import 'package:groupchat/services/chat/chat_service.dart';
+import 'package:groupchat/services/user_list.dart';
 import 'package:groupchat/variables/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:multi_select_flutter/bottom_sheet/multi_select_bottom_sheet_field.dart';
+import 'package:multi_select_flutter/chip_display/multi_select_chip_display.dart';
+import 'package:multi_select_flutter/util/multi_select_item.dart';
+import 'package:multi_select_flutter/util/multi_select_list_type.dart';
+import '../controller/comman.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   HomePage({super.key});
 
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   final ChatService _chatService = ChatService();
+
+  Future<void> groupmodel(context) async {
+    String groupName = '';
+    List<UserList> selectedUsers = [];
+    List<Map<String, dynamic>> userList = await getAllUsernames();
+    final _items = userList
+        .map((userData) => MultiSelectItem<Map<String, dynamic>>(
+              userData,
+              userData['username'],
+            ))
+        .toList();
+
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          padding: EdgeInsets.all(16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                onChanged: (value) {
+                  groupName = value;
+                },
+                decoration: InputDecoration(
+                  labelText: 'Group Name',
+                ),
+              ),
+              SizedBox(height: 16),
+              Column(
+                children: <Widget>[
+                  MultiSelectBottomSheetField<Map<String, dynamic>>(
+                    initialChildSize: 0.4,
+                    listType: MultiSelectListType.CHIP,
+                    searchable: true,
+                    buttonText: Text("Member Usernames"),
+                    title: Text("Select Member Usernames"),
+                    items: _items,
+                   onConfirm: (List<Map<String, dynamic>?> values) {
+  // Remove null values from the list before processing
+  values = values.where((element) => element != null).toList();
+
+  // Explicitly cast to the expected type
+  List<Map<String, dynamic>> nonNullableValues = values.cast<Map<String, dynamic>>();
+
+  // Ensure that the list is non-null before processing
+  if (nonNullableValues.isNotEmpty) {
+    // Now you can safely process the non-null values
+    selectedUsers = nonNullableValues
+        .map((userData) {
+          return UserList(
+            uid: userData['uid'],
+            username: userData['username'],
+          );
+        })
+        .toList();
+  }
+},
+
+                    chipDisplay: MultiSelectChipDisplay(
+                      onTap: (value) {
+                        setState(() {
+                          selectedUsers.remove(value);
+                        });
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.mainBackground,
       appBar: AppBar(
-        backgroundColor:
-            AppColors.mainBackground, // Match the Scaffold background color
-
+        backgroundColor: AppColors.mainBackground,
         title: const Text(
           'Chatting App',
           style: TextStyle(
@@ -28,6 +112,17 @@ class HomePage extends StatelessWidget {
             fontSize: 26,
           ),
         ),
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.add,
+              color: AppColors.white,
+            ),
+            onPressed: () {
+              groupmodel(context);
+            },
+          ),
+        ],
         bottom: PreferredSize(
           preferredSize:
               const Size.fromHeight(36.0), // Adjust the height as needed
