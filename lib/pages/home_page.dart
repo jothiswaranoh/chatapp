@@ -1,18 +1,102 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'package:groupchat/components/carouselbody.dart';
-import 'package:groupchat/components/my_drawer.dart';
-import 'package:groupchat/components/my_chat_list.dart';
-import 'package:groupchat/pages/chat_page.dart';
-import 'package:groupchat/services/chat/chat_service.dart';
-import 'package:groupchat/variables/app_colors.dart';
 import 'package:flutter/material.dart';
+import '../components/carouselbody.dart';
+import '../components/my_drawer.dart';
+import '../components/my_chat_list.dart';
+import '../pages/chat_page.dart';
+import '../services/chat/chat_service.dart';
+import '../variables/app_colors.dart';
+import 'package:multi_select_flutter/bottom_sheet/multi_select_bottom_sheet_field.dart';
+import 'package:multi_select_flutter/chip_display/multi_select_chip_display.dart';
+import 'package:multi_select_flutter/util/multi_select_item.dart';
+import 'package:multi_select_flutter/util/multi_select_list_type.dart';
 import '../helper/capitalize_text.dart';
+import '../model/user_list.dart';
+import '../controller/comman.dart';
 
-class HomePage extends StatelessWidget {
-  HomePage({Key? key}) : super(key: key);
+class HomePage extends StatefulWidget {
+  HomePage({super.key});
 
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   final ChatService _chatService = ChatService();
+  Future<void> groupmodel(context) async {
+    String groupName = '';
+    List<UserList> selectedUsers = [];
+    List<Map<String, dynamic>> userList = await getAllUsernames();
+    final _items = userList
+        .map((userData) => MultiSelectItem<Map<String, dynamic>>(
+              userData,
+              userData['username'],
+            ))
+        .toList();
+
+    await showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          padding: EdgeInsets.all(16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                onChanged: (value) {
+                  groupName = value;
+                },
+                decoration: InputDecoration(
+                  labelText: 'Group Name',
+                ),
+              ),
+              SizedBox(height: 16),
+              Column(
+                children: <Widget>[
+                  MultiSelectBottomSheetField<Map<String, dynamic>>(
+                    initialChildSize: 0.4,
+                    listType: MultiSelectListType.CHIP,
+                    searchable: true,
+                    buttonText: Text("Member Usernames"),
+                    title: Text("Select Member Usernames"),
+                    items: _items,
+                    onConfirm: (List<Map<String, dynamic>?> values) {
+                      // Remove null values from the list before processing
+                      values =
+                          values.where((element) => element != null).toList();
+
+                      // Explicitly cast to the expected type
+                      List<Map<String, dynamic>> nonNullableValues =
+                          values.cast<Map<String, dynamic>>();
+
+                      // Ensure that the list is non-null before processing
+                      if (nonNullableValues.isNotEmpty) {
+                        // Now you can safely process the non-null values
+                        selectedUsers = nonNullableValues.map((userData) {
+                          return UserList(
+                            uid: userData['uid'],
+                            username: userData['username'],
+                          );
+                        }).toList();
+                      }
+                    },
+                    chipDisplay: MultiSelectChipDisplay(
+                      onTap: (value) {
+                        setState(() {
+                          selectedUsers.remove(value);
+                        });
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +118,17 @@ class HomePage extends StatelessWidget {
           fontSize: 28,
         ),
       ),
+      actions: [
+        IconButton(
+          icon: Icon(
+            Icons.add,
+            color: AppColors.whiteColor,
+          ),
+          onPressed: () {
+            groupmodel(context);
+          },
+        ),
+      ],
     );
   }
 
@@ -43,26 +138,26 @@ class HomePage extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-            child:
-             Container(
+            child: Container(
               margin: const EdgeInsets.symmetric(horizontal: 15.0),
               decoration: BoxDecoration(
                 border: Border.all(color: AppColors.appTextColor),
                 borderRadius: BorderRadius.circular(15.0),
                 boxShadow: [
-                BoxShadow(
-                  color: AppColors.appTextColor.withOpacity(0.1), // Shadow color
-                  spreadRadius: 2,
-                  blurRadius: 5,
-                  offset: Offset(0, 4), // Shadow offset
-                ),
-              ],
+                  BoxShadow(
+                    color:
+                        AppColors.appTextColor.withOpacity(0.1), // Shadow color
+                    spreadRadius: 2,
+                    blurRadius: 5,
+                    offset: Offset(0, 4), // Shadow offset
+                  ),
+                ],
               ),
-              child:
-               TextField(
+              child: TextField(
                 decoration: InputDecoration(
                   hintText: 'Search...',
-                  hintStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
+                  hintStyle:
+                      TextStyle(color: Theme.of(context).colorScheme.primary),
                   border: InputBorder.none,
                   prefixIcon: Icon(
                     Icons.search,
@@ -87,7 +182,6 @@ class HomePage extends StatelessWidget {
         SizedBox(height: 5),
         CarouselBody(),
         SizedBox(height: 5),
-
         _buildSectionTitle("Chats", context),
         _buildChatList(),
       ],
