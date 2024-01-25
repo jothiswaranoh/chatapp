@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:groupchat/components/my_back_button.dart';
 import 'package:groupchat/helper/display_message_to_user.dart';
 
-import '../components/my_list_tile.dart';
+import '../components/my_users_list.dart';
 
 class UsersPage extends StatelessWidget {
   const UsersPage({super.key});
@@ -54,7 +54,7 @@ class UsersPage extends StatelessWidget {
                     final user = users[index];
                     String userName = user['username'];
                     String email = user["email"];
-                    return MyListTile(title: userName, subtitle: email);
+                    return MyUsersList(title: userName, subtitle: email);
                   }),
                 ),
               ),

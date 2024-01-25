@@ -1,10 +1,6 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:groupchat/components/my_button.dart';
 import 'package:groupchat/components/my_textfield.dart';
-
-import '../components/space.dart';
-import '../helper/display_message_to_user.dart';
 import 'package:groupchat/controller/comman.dart';
 
 class LoginPage extends StatefulWidget {
@@ -16,7 +12,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  void login_page() {
+  void loginPage() {
     login(context, emailController, passwordController);
   }
 
@@ -63,19 +59,18 @@ class _LoginPageState extends State<LoginPage> {
                     hintText: "Email",
                     obscureText: false,
                     controller: emailController),
-                Space(
-                  inputHeight: 10,
-                ), //own methoed for space
-                //password
+                const SizedBox(
+                  height: 10,
+                ),
                 MyTextfield(
                     hintText: "Password",
                     obscureText: true,
                     controller: passwordController),
 
-                //forgot password
-                Space(
-                  inputHeight: 10,
+                const SizedBox(
+                  height: 10,
                 ),
+
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -86,19 +81,18 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ],
                 ),
-                //sign in button
-                Space(
-                  inputHeight: 25,
+                const SizedBox(
+                  height: 25,
                 ),
 
                 MyButton(
                   text: "Login",
-                  onTap: login_page,
+                  onTap: loginPage,
                 ),
-                // dont have a account registered here
-                Space(
-                  inputHeight: 25,
+                const SizedBox(
+                  height: 25,
                 ),
+
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [

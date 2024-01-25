@@ -1,24 +1,48 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:groupchat/model/message.dart';
-
+import '../../model/message.dart';
 import '../../controller/comman.dart';
 
 class ChatService{
-  //get instanc eof firestore
-
+  //get instance of firestore
 final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   //get user stream
 Stream<List<Map<String,dynamic>>> getUsersStream() {
   return _firestore.collection("Users").snapshots().map((snapshot){
     return snapshot.docs.map((doc){
-      //go throudh each indivial user
-
+      //go through each individual user
       final user = doc.data();
       return user;
     }).toList();
   }
   );
 }
+Future<String> createGroup(String groupname,List<String> memberUserIDs) async {
+    final currentUser = getCurrentUser();
+    assert(currentUser != null, "getCurrentUser() should not be null");
+
+    final String currentUserId = currentUser!.uid;
+    memberUserIDs.add(currentUserId);
+
+    memberUserIDs.sort();
+    String chatRoomID = memberUserIDs.join("_");
+
+    // Check if the group chat already exists
+    final chatRoomDoc =
+        await _firestore.collection("group_chat_rooms").doc(chatRoomID).get();
+
+    if (chatRoomDoc.exists) {
+      return chatRoomID; // Group chat already exists, return the existing chat room ID
+    }
+
+    // Group chat doesn't exist, create a new chat room in the 'group_chat_rooms' collection
+    await _firestore.collection("group_chat_rooms").doc(chatRoomID).set({
+      'groupname':groupname,
+      'memberUserIDs': memberUserIDs,
+    });
+
+    return chatRoomID;
+  }
+
 Future<void> sendMessage(String receivedId, message) async {
   final currentUser = getCurrentUser();
   assert(currentUser != null, "getCurrentUser() should not be null");
@@ -56,10 +80,7 @@ Future<void> sendMessage(String receivedId, message) async {
     print("One or more properties are null. Message not sent.");
   }
 }
-
   //construct chat room id
-
-
   //get message
   Stream<QuerySnapshot> getMessages(String userID, otherUserID){
     List<String> ids = [userID,otherUserID];
@@ -67,6 +88,4 @@ Future<void> sendMessage(String receivedId, message) async {
     String chatRoomID = ids.join("_");
   return _firestore.collection("chat_rooms").doc(chatRoomID).collection("messages").orderBy("timestamp", descending: false).snapshots();
   }
-
-
 }

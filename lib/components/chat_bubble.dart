@@ -12,14 +12,22 @@ class ChatBubble extends StatelessWidget {
       decoration: BoxDecoration(
         color: isCurrentUser
             ? const Color.fromARGB(255, 162, 218, 164)
-            : Color.fromARGB(255, 167, 214, 227),
-        borderRadius: BorderRadius.circular(15),
+            : const Color.fromARGB(255, 167, 214, 227),
+        borderRadius: isCurrentUser
+            ? const BorderRadius.only(
+                topLeft: Radius.circular(10),
+                topRight: Radius.circular(10),
+                bottomLeft: Radius.circular(10))
+            : const BorderRadius.only(
+                topLeft: Radius.circular(10),
+                topRight: Radius.circular(10),
+                bottomRight: Radius.circular(10)),
       ),
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
       margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 25),
       child: Text(
         message,
-        style: const TextStyle(color: Colors.black),
+        style: const TextStyle(color: Colors.black,fontSize: 15.0),
       ),
     );
   }
