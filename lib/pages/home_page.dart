@@ -1,22 +1,22 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'package:flutter/material.dart';
+import 'package:multi_select_flutter/bottom_sheet/multi_select_bottom_sheet_field.dart';
+import 'package:multi_select_flutter/chip_display/multi_select_chip_display.dart';
+import 'package:multi_select_flutter/util/multi_select_item.dart';
+import 'package:multi_select_flutter/util/multi_select_list_type.dart';
+
 import '../components/carouselbody.dart';
 import '../components/my_drawer.dart';
 import '../components/my_chat_list.dart';
 import '../pages/chat_page.dart';
 import '../services/chat/chat_service.dart';
 import '../variables/app_colors.dart';
-import 'package:multi_select_flutter/bottom_sheet/multi_select_bottom_sheet_field.dart';
-import 'package:multi_select_flutter/chip_display/multi_select_chip_display.dart';
-import 'package:multi_select_flutter/util/multi_select_item.dart';
-import 'package:multi_select_flutter/util/multi_select_list_type.dart';
 import '../helper/capitalize_text.dart';
+import '../components/my_group_chat_model.dart';
 import '../model/user_list.dart';
 import '../controller/comman.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({super.key});
+  HomePage({Key? key}) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -24,22 +24,29 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final ChatService _chatService = ChatService();
-  Future<void> groupmodel(context) async {
-    String groupName = '';
-    List<UserList> selectedUsers = [];
+
+  String groupName = '';
+  List<UserList> selectedUsers = [];
+
+  Future<void> groupChatModel(context) async {
     List<Map<String, dynamic>> userList = await getAllUsernames();
-    final _items = userList
+    final items = userList
         .map((userData) => MultiSelectItem<Map<String, dynamic>>(
               userData,
               userData['username'],
             ))
         .toList();
 
+    await _buildBottomSheet(context, items);
+  }
+
+  Future<void> _buildBottomSheet(BuildContext context,
+      List<MultiSelectItem<Map<String, dynamic>>> items) async {
     await showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
         return Container(
-          padding: EdgeInsets.all(16),
+          padding: const EdgeInsets.all(16),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -47,49 +54,38 @@ class _HomePageState extends State<HomePage> {
                 onChanged: (value) {
                   groupName = value;
                 },
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Group Name',
                 ),
               ),
-              SizedBox(height: 16),
-              Column(
-                children: <Widget>[
-                  MultiSelectBottomSheetField<Map<String, dynamic>>(
-                    initialChildSize: 0.4,
-                    listType: MultiSelectListType.CHIP,
-                    searchable: true,
-                    buttonText: Text("Member Usernames"),
-                    title: Text("Select Member Usernames"),
-                    items: _items,
-                    onConfirm: (List<Map<String, dynamic>?> values) {
-                      // Remove null values from the list before processing
-                      values =
-                          values.where((element) => element != null).toList();
-
-                      // Explicitly cast to the expected type
-                      List<Map<String, dynamic>> nonNullableValues =
-                          values.cast<Map<String, dynamic>>();
-
-                      // Ensure that the list is non-null before processing
-                      if (nonNullableValues.isNotEmpty) {
-                        // Now you can safely process the non-null values
-                        selectedUsers = nonNullableValues.map((userData) {
-                          return UserList(
-                            uid: userData['uid'],
-                            username: userData['username'],
-                          );
-                        }).toList();
-                      }
-                    },
-                    chipDisplay: MultiSelectChipDisplay(
-                      onTap: (value) {
-                        setState(() {
-                          selectedUsers.remove(value);
-                        });
-                      },
-                    ),
-                  ),
-                ],
+              const SizedBox(height: 16),
+              MultiSelectBottomSheetField<Map<String, dynamic>>(
+                initialChildSize: 0.4,
+                listType: MultiSelectListType.CHIP,
+                searchable: true,
+                buttonText: const Text("Member Usernames"),
+                title: const Text("Select Member Usernames"),
+                items: items,
+                onConfirm: (List<Map<String, dynamic>?> values) {
+                  values = values.where((element) => element != null).toList();
+                  List<Map<String, dynamic>> nonNullableValues =
+                      values.cast<Map<String, dynamic>>();
+                  if (nonNullableValues.isNotEmpty) {
+                    selectedUsers = nonNullableValues.map((userData) {
+                      return UserList(
+                        uid: userData['uid'],
+                        username: userData['username'],
+                      );
+                    }).toList();
+                  }
+                },
+                chipDisplay: MultiSelectChipDisplay(
+                  onTap: (value) {
+                    setState(() {
+                      selectedUsers.remove(value);
+                    });
+                  },
+                ),
               ),
             ],
           ),
@@ -118,17 +114,6 @@ class _HomePageState extends State<HomePage> {
           fontSize: 28,
         ),
       ),
-      actions: [
-        IconButton(
-          icon: Icon(
-            Icons.add,
-            color: AppColors.whiteColor,
-          ),
-          onPressed: () {
-            groupmodel(context);
-          },
-        ),
-      ],
     );
   }
 
@@ -149,7 +134,7 @@ class _HomePageState extends State<HomePage> {
                         AppColors.appTextColor.withOpacity(0.1), // Shadow color
                     spreadRadius: 2,
                     blurRadius: 5,
-                    offset: Offset(0, 4), // Shadow offset
+                    offset: const Offset(0, 4), // Shadow offset
                   ),
                 ],
               ),
@@ -179,11 +164,36 @@ class _HomePageState extends State<HomePage> {
         _buildSearchBar(context),
         const SizedBox(height: 10),
         _buildSectionTitle("Group chat", context),
-        SizedBox(height: 5),
+        const SizedBox(height: 5),
         CarouselBody(),
-        SizedBox(height: 5),
+        const SizedBox(height: 5),
         _buildSectionTitle("Chats", context),
         _buildChatList(),
+        Container(
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: AppColors.appTextColor,
+            ),
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.appTextColor.withOpacity(0.1),
+                spreadRadius: 2,
+                blurRadius: 5,
+                offset: Offset(0, 4),
+              ),
+            ],
+          ),
+          child: IconButton(
+            icon: const Icon(
+              Icons.message_rounded,
+              color: AppColors.appTextColor,
+            ),
+            onPressed: () {
+              groupChatModel(context);
+            },
+          ),
+        ),
       ],
     );
   }
@@ -249,7 +259,7 @@ class _HomePageState extends State<HomePage> {
 }
 
 
-// decoration: BoxDecoration(
+ //decoration: BoxDecoration(
 //                 gradient: const LinearGradient(
 //                   colors: [
 //                     AppColors.appBarColor,

@@ -1,3 +1,5 @@
+import 'dart:js';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:groupchat/components/chat_bubble.dart';
@@ -73,13 +75,13 @@ class ChatPage extends StatelessWidget {
 
         return ListView(
           children:
-              snapshot.data!.docs.map((doc) => _buildMessageItem(doc)).toList(),
+              snapshot.data!.docs.map((doc) => _buildMessageItem(doc,context)).toList(),
         );
       },
     );
   }
 
-  Widget _buildMessageItem(DocumentSnapshot doc) {
+  Widget _buildMessageItem(DocumentSnapshot doc,context) {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
     final currentUser = getCurrentUser();
 
@@ -93,11 +95,24 @@ class ChatPage extends StatelessWidget {
         isCurrentUser ? Alignment.centerRight : Alignment.centerLeft;
 
     return Container(
+      padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 6.0),
+      margin: isCurrentUser
+          ? EdgeInsets.only(
+              left: MediaQuery.of(context).size.width / 4)
+          : EdgeInsets.only(
+              right: MediaQuery.of(context).size.width / 4),
+      width: 20.0,
       alignment: alignment,
       child: Column(
         crossAxisAlignment:
             isCurrentUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+        mainAxisAlignment:
+            isCurrentUser ? MainAxisAlignment.end : MainAxisAlignment.start,
         children: [
+          Text(
+            isCurrentUser ? "You" : capitalizeText(receivedUsername),
+            style: TextStyle(fontSize: 12),
+          ),
           ChatBubble(message: data["message"], isCurrentUser: isCurrentUser),
         ],
       ),
